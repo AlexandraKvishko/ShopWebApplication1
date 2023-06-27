@@ -1,0 +1,70 @@
+﻿@model IEnumerable<ShopWebApplication1.Models.Order>
+@using ShopWebApplication1.Data
+
+@{
+    ViewData["Title"] = "Замовлення";
+    var UserRole = new UserCheck().GetCurUserRole();
+    bool IsManager = false;
+    if (UserRole > 0) IsManager = true;
+}
+
+<h1>Замовлення</h1>
+<p>
+    <h2>
+        @(ViewBag.User.Name + " " + ViewBag.User.Patronymic + " " + ViewBag.User.Surname)
+    </h2>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Номер
+            </th>
+            <th>
+                Дата
+            </th>
+            <th>
+                Сума
+            </th>
+            <th>
+                Статус
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@{decimal Sum;}
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Data)
+            </td>
+            <td>
+                @{
+                    Sum = 0;
+                    foreach (var itg in item.OrderGoods)
+                    {
+                        Sum += itg.Quatity * itg.Good.Price;
+                    }
+                }
+                @Html.DisplayFor(p => Sum)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State.Name)
+            </td>
+            <td>
+                <h4>
+                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                    @if (IsManager)
+                    {
+                        <span> | </span><a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    }
+                </h4>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

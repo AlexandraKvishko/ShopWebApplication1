@@ -1,0 +1,48 @@
+﻿@model ShopWebApplication1.Models.Good
+
+@{
+    ViewData["Title"] = "Інформація";
+}
+
+<h1>Інформація</h1>
+
+<div>
+    <h4>про товар</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Назва
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Штрихкод
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Barcode)
+        </dd>
+        <dt class = "col-sm-2">
+            Ціна
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class = "col-sm-2">
+            Кількість
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+        <dt class = "col-sm-2">
+            Опис
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Descrip)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> |
+    <a asp-action="Index">Повернутися до списку</a>
+</div>

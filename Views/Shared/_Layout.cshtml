@@ -1,0 +1,96 @@
+﻿@using ShopWebApplication1.Data;
+@{
+    var CUser = new UserCheck();
+    bool IsCurUserLogin = CUser.IsUserLogin();
+    string UserName = null;
+    string ProfileStr = null;
+    if (IsCurUserLogin) UserName = CUser.GetCurUserName();
+    if (UserName != null) ProfileStr = "Привіт " + UserName + "!";
+    else ProfileStr = "Профіль";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ShopWebApplication1</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ShopWebApplication1.styles.css" asp-append-version="true" />
+  
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" />
+    <link rel="stylesheet" href="~/lib/awesome/font-awesome-4.7.0/css/font-awesome.min.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">"Рослини"</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Головна</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Рослини</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (IsCurUserLogin)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Profile">
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i> @ProfileStr
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Basketts" asp-action="Index">
+                                    <i class="fa fa-shopping-basket" aria-hidden="true"></i> Кошик
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">
+                                    <i class="fa fa-list-ul" aria-hidden="true"></i> Замовлення
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Logout">
+                                    <i class="fa fa-times" aria-hidden="true"></i> Вийти
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Register">Реєстрація</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Login">Вхід</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - "Рослини"  <a asp-area="" asp-controller="Home" asp-action="Privacy">Політика конфіденційності</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

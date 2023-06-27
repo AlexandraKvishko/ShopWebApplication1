@@ -1,0 +1,69 @@
+﻿@model ShopWebApplication1.Models.Order
+
+@{
+    ViewData["Title"] = "Замовлення";
+}
+
+<h2>
+    @("Замовлення N " + Model.Id)
+</h2>
+<hr>
+<b>@("Статус: ")</b>@(Model.State.Name)
+
+<hr>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Код товару
+            </th>
+            <th>
+                Назва
+            </th>
+            <th>
+                Кількість
+            </th>
+            <th>
+                Ціна
+            </th>
+            <th>
+                Сума
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@{decimal TotalSum = 0;}
+        @foreach (var item in Model.OrderGoods)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Good.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Good.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quatity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Good.Price)
+            </td>
+            <td>
+                @{
+                    var Sum = item.Quatity * item.Good.Price;
+                    TotalSum += Sum;
+                }
+                @Html.DisplayFor(p=>Sum)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<h4>
+    Разом: @Html.DisplayFor(p=>TotalSum)
+</h4>
+<br>
+<div>
+    <a class="btn btn-secondary" asp-area="" asp-action="Index">Перейти до списку замовлень</a>
+</div>

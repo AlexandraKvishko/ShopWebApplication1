@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ShopWebApplication1.Models.Baskett>
+@using ShopWebApplication1.Data
+
+@{
+    ViewData["Title"] = "Кошик";
+    var CUser = new UserCheck();
+    bool IsCurUserBaskettFill = CUser.IsCurUserBaskettFill();
+}
+
+<h1>Кошик</h1>
+<p>
+    <h2>
+        @(ViewBag.User.Name + " " + ViewBag.User.Patronymic + " " + ViewBag.User.Surname)
+    </h2>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Код товару
+            </th>
+            <th>
+                Назва
+            </th>
+            <th>
+                Кількість
+            </th>
+            <th>
+                Ціна
+            </th>
+            <th>
+                Сума
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@{decimal TotalSum = 0;}
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Goods.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Goods.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Goods.Price)
+            </td>
+            <td>
+                @{
+                    var Sum = item.Quantity * item.Goods.Price;
+                    TotalSum += Sum;
+                }
+                @Html.DisplayFor(p=>Sum)
+            </td>
+            <td>
+              
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+               
+                <h4>
+                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                </h4>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<h4>
+    Разом: @Html.DisplayFor(p=>TotalSum)
+</h4>
+<br>
+@if (IsCurUserBaskettFill)
+{
+    <a class="btn btn-success" asp-area="" asp-controller="Users" asp-action="Profile">Оформити замовлення</a>
+}

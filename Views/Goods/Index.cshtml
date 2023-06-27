@@ -1,0 +1,121 @@
+﻿@model IEnumerable<ShopWebApplication1.Models.Good>
+@using ShopWebApplication1.Data
+
+@{
+    ViewData["Title"] = "Товари за категорією";
+    var CUser = new UserCheck();
+    bool IsCurUserLogin = CUser.IsUserLogin();
+    var UserRole = CUser.GetCurUserRole();
+    bool IsManager = false;
+    if (UserRole > 0) IsManager = true;
+}
+
+@{
+    ViewData["Title"] = "Товари за категорією";
+}
+
+<h1>Товари за категорією: @ViewBag.Cat</h1>
+
+@if (IsManager)
+{
+    <p>
+        <!--<a asp-action="Create" asp-route-id="@ViewBag.Cat">Додати новий товар</a>-->
+        @Html.ActionLink("Додати новий товар","Create", new { categoryId = @ViewBag.CatId})
+    </p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Назва
+            </th>
+            <th>
+                Штрихкод
+            </th>
+            <th>
+                Ціна
+            </th>
+            @if (IsManager)
+            {
+                <th>
+                    Кількість
+                </th>
+            }
+            <th>
+                Опис товару
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Barcode)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            @if (IsManager)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+            }
+            <td>
+                    @Html.DisplayFor(modelItem => item.Descrip)
+            </td>
+
+            <td>
+                @if (IsManager)
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a><span> | </span>
+                    <a asp-action = "Details" asp-route-id = "@item.Id">Переглянути</a><span> | </span>
+                    <a asp-action = "Delete" asp-route-id = "@item.Id">Видалити</a><span> | </span>
+                }
+                @if (IsCurUserLogin)
+                {
+                    <a asp-action="AddToBaskett" asp-route-id="@item.Id">Додати до кошика</a>
+                }
+            </td>
+    </tr>
+}
+    </tbody>
+</table>
+<div class="container">
+    <div class="chart-container">
+        <div id="chart1"></div>
+    </div>
+</div>
+@section scripts{
+    <style>
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+    <script type "text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            $.get('/api/Chart/JsonData', function (JsonData) {
+                data = google.visualization.arrayToDataTable(JsonData, false);
+                var option = {
+                    title: "Relation between quantity of products and their types",
+                    width: 500,
+                    height: 400
+                };
+                chart = new google.visualization.PieChart(document.getElementById('chart1'));
+                chart.draw(data, option);
+            })
+        }
+    </script>
+}

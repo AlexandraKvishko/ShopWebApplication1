@@ -1,0 +1,106 @@
+﻿@model IEnumerable<ShopWebApplication1.Models.Category>
+@using ShopWebApplication1.Data
+
+@{
+    ViewData["Title"] = "Категорії";
+    var UserRole = new UserCheck().GetCurUserRole();
+    bool IsManager = false;
+    if (UserRole > 0) IsManager = true;
+}
+
+<h1>Категорії рослин</h1>
+
+@if (IsManager)
+{
+    <p>
+        <a asp-action="Create">Створити нову</a>
+    </p>
+}
+
+<div>
+    @if (ViewBag.importSuccess != null)
+    {
+        <p>@ViewBag.importSuccess</p>
+    }
+
+    <h3>Выберите Excel-файл для импорта</h3>
+    <form method="post" asp-action="ImportFromExcel" enctype="multipart/form-data">
+        <div>
+            <label>Загрузите Excel-файл:</label>
+            <input type="file" name="fileExcel" accept=".xlsx, .xls" />
+        </div>
+        <div>
+            <button type="submit">Импортировать</button>
+        </div>
+    </form>
+</div>
+
+<div>
+    <h3>Завантажити інформації в файл</h3>
+    <a asp-action="ExportToExcel" >Завантажити </a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @if (IsManager)
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a><span> | </span>
+                }
+                <a asp-action="Details" asp-route-id="@item.Id">Переглянути</a>
+                @if (IsManager)
+                {
+                    <span> | </span><a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<div class="container">
+    <div class="chart-container">
+        <div id="chart1"></div>
+    </div>
+</div>
+@section scripts{
+    <style>
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+    <script type "text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            $.get('/api/Chart/JsonData1', function (JsonData) {
+                data = google.visualization.arrayToDataTable(JsonData, false);
+                var option = {
+                    title: "Relation between quantity of products and their types",
+                    width: 500,
+                    height: 400
+                };
+                chart = new google.visualization.PieChart(document.getElementById('chart1'));
+                chart.draw(data, option);
+            })
+        }
+    </script>
+}

@@ -1,0 +1,92 @@
+﻿@model ShopWebApplication1.Models.Order
+
+@{
+    ViewData["Title"] = "Замовлення";
+}
+
+<h2>
+    @("Замовлення N " + Model.Id)
+</h2>
+<hr>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="Data" />
+            <div class="form-group">
+            <b>
+                <label asp-for="StateId" class="control-label">Статус</label>
+            </b>
+            <select asp-for="StateId" class="form-control" asp-items="ViewBag.StateId"></select>
+            <span asp-validation-for="StateId" class="text-danger"></span>
+            </div>
+            <br>
+            <div class="form-group">
+                <input type="submit" value="Змінити" class="btn btn-primary" />
+            </div>
+            <br>
+        </form>
+    </div>
+</div>
+<hr>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Код товару
+            </th>
+            <th>
+                Назва
+            </th>
+            <th>
+                Кількість
+            </th>
+            <th>
+                Ціна
+            </th>
+            <th>
+                Сума
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            decimal TotalSum = 0;
+        }
+        @foreach (var item in Model.OrderGoods)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Good.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Good.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quatity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Good.Price)
+                </td>
+                <td>
+                    @{
+                        var Sum = item.Quatity * item.Good.Price;
+                        TotalSum += Sum;
+                    }
+                    @Html.DisplayFor(p=>Sum)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<h4>
+    Разом: @Html.DisplayFor(p=>TotalSum)
+</h4>
+<br>
+<div>
+    <a class="btn btn-secondary" asp-area="" asp-action="Index">Перейти до списку замовлень</a>
+</div>
